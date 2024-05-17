@@ -37,4 +37,24 @@ public class CardController {
     public ResponseEntity<String> blockCard(@PathVariable String id) {
         return ResponseEntity.ok(cardService.blockCard(id));
     }
+
+    @PostMapping("/card/balance")
+    public ResponseEntity<Card> refillCard(@PathVariable String cardId, Integer balance) {
+        Card card = cardService.refillCard(cardId, balance);
+        if(card != null) {
+            return ResponseEntity.ok(card);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/card/balance/{cardId}")
+    public ResponseEntity<Integer> getBalance(@PathVariable String cardId) {
+        Integer response = cardService.getBalance(cardId);
+        if(response != null) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }

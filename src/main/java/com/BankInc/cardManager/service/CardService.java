@@ -8,4 +8,6 @@ public interface CardService {
     String blockCard(String id);
     Card refillCard(String id, Integer balance);
     Integer getBalance (String id);
+    Card getCard(String id);
+    Integer updateBalance(String id, Integer balance);
 }

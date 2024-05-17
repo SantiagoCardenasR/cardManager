@@ -76,6 +76,32 @@ public class CardServiceImpl implements CardService {
         }
     }
 
+    @Override
+    public Card getCard(String id) {
+        if(cardRepository.existsById(id)) {
+            return cardRepository.findById(id).get();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public Integer updateBalance(String id, Integer balance) {
+        if(cardRepository.existsById(id)) {
+            Card card = cardRepository.findById(id).get();
+            if(card.getBalance() > balance) {
+                card.setBalance(card.getBalance() - balance);
+                cardRepository.save(card);
+                return card.getBalance();
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
+
     public LocalDate generateRandomExpirationDate() {
         // Generate a random month between 1 (January) and 12 (December)
         int randomMonth = ThreadLocalRandom.current().nextInt(1, 13);
