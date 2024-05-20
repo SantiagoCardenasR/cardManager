@@ -1,8 +1,10 @@
 package com.BankInc.cardManager.service;
 
 import com.BankInc.cardManager.entity.Transaction;
+import com.BankInc.cardManager.entity.dto.TransactionResponse;
 
 public interface TransactionService {
-    Transaction purchase(String cardId, Integer price);
-    Transaction getTransaction(Integer id);
+    TransactionResponse purchase(Integer cardId, Integer price);
+    TransactionResponse getTransaction(Integer id);
+    TransactionResponse cancelPurchase(Integer cardId, Integer transactionId);
 }

@@ -1,9 +1,6 @@
 package com.BankInc.cardManager.entity;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,11 +16,22 @@ import java.util.List;
 @NoArgsConstructor
 public class Card {
     @Id
-    private String id;
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    private Integer id;
+    private Long cardNumber;
     private String holderName;
     private LocalDate expirationDate;
     private Integer balance;
     private Boolean isActive;
     @OneToMany(mappedBy = "card", cascade = CascadeType.ALL)
     private List<Transaction> transactions;
+
+    public Card(Long pCardNumber, String pHolderName, LocalDate pExpirationDate, Integer pBalance, Boolean pIsActive, List<Transaction> pTransactions) {
+        cardNumber = pCardNumber;
+        holderName = pHolderName;
+        expirationDate = pExpirationDate;
+        balance = pBalance;
+        isActive = pIsActive;
+        transactions = pTransactions;
+    }
 }

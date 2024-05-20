@@ -14,7 +14,7 @@ public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String transactionCardId;
+    private Integer transactionCardId;
     private Integer price;
     private Boolean state;
     private LocalDate purchaseDate;
@@ -22,10 +22,11 @@ public class Transaction {
     @JoinColumn(name = "cardId")
     private Card card;
 
-    public Transaction(String pCardId, Integer pPrice, Boolean pState, LocalDate pPurchaseDate) {
+    public Transaction(Integer pCardId, Integer pPrice, Boolean pState, LocalDate pPurchaseDate, Card pCard) {
         transactionCardId = pCardId;
         price = pPrice;
         state = pState;
         purchaseDate = pPurchaseDate;
+        card = pCard;
     }
 }

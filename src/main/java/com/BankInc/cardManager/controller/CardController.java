@@ -1,6 +1,9 @@
 package com.BankInc.cardManager.controller;
 
 import com.BankInc.cardManager.entity.Card;
+import com.BankInc.cardManager.entity.dto.CardId;
+import com.BankInc.cardManager.entity.dto.CardRefillRequest;
+import com.BankInc.cardManager.entity.dto.CardResponse;
 import com.BankInc.cardManager.service.CardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,43 +16,43 @@ public class CardController {
     @Autowired
     private CardService cardService;
 
-    @GetMapping("/{id}/number")
-    public ResponseEntity<Card> generateCard(@PathVariable String id) {
-        Card response = cardService.generateCard(id);
+    @GetMapping("/{productId}/number")
+    public ResponseEntity<CardResponse> generateCard(@PathVariable String productId) {
+        Card response = cardService.generateCard(productId);
         if( response != null) {
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(new CardResponse(response.getCardNumber(),response.getHolderName(),response.getExpirationDate(),response.getBalance(), response.getIsActive()));
         } else {
             return ResponseEntity.badRequest().build();
         }
     }
 
-    @PostMapping("/card/enroll")
-    public ResponseEntity<Card> activateCard(@RequestBody String cardId) {
-        Card response = cardService.activateCard(cardId);
+    @PostMapping("/enroll")
+    public ResponseEntity<CardResponse> activateCard(@RequestBody CardId cardId) {
+        Card response = cardService.activateCard(cardId.getId());
         if(response != null) {
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(new CardResponse(response.getCardNumber(),response.getHolderName(),response.getExpirationDate(),response.getBalance(), response.getIsActive()));
         } else {
             return ResponseEntity.badRequest().build();
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> blockCard(@PathVariable String id) {
-        return ResponseEntity.ok(cardService.blockCard(id));
+    @DeleteMapping("/{cardId}")
+    public ResponseEntity<String> blockCard(@PathVariable Integer cardId) {
+        return ResponseEntity.ok(cardService.blockCard(cardId));
     }
 
-    @PostMapping("/card/balance")
-    public ResponseEntity<Card> refillCard(@PathVariable String cardId, Integer balance) {
-        Card card = cardService.refillCard(cardId, balance);
-        if(card != null) {
-            return ResponseEntity.ok(card);
+    @PostMapping("/balance")
+    public ResponseEntity<CardResponse> refillCard(@RequestBody CardRefillRequest cardRefillRequest) {
+        Card response = cardService.refillCard(cardRefillRequest.getCardId(), cardRefillRequest.getBalance());
+        if(response != null) {
+            return ResponseEntity.ok(new CardResponse(response.getCardNumber(),response.getHolderName(),response.getExpirationDate(),response.getBalance(), response.getIsActive()));
         } else {
             return ResponseEntity.badRequest().build();
         }
     }
 
-    @GetMapping("/card/balance/{cardId}")
-    public ResponseEntity<Integer> getBalance(@PathVariable String cardId) {
+    @GetMapping("/balance/{cardId}")
+    public ResponseEntity<Integer> getBalance(@PathVariable Integer cardId) {
         Integer response = cardService.getBalance(cardId);
         if(response != null) {
             return ResponseEntity.ok(response);

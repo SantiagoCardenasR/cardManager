@@ -22,17 +22,18 @@ public class CardServiceImpl implements CardService {
     public CardRepository cardRepository;
     @Override
     public Card generateCard(String id) {
-        String cardId = id + randomNumberGenerator();
+        String tempCardNumber = id + randomNumberGenerator();
+        Long cardNumber = Long.parseLong(tempCardNumber);
         LocalDate expirationDate = generateRandomExpirationDate();
         List<Transaction> transactions = new ArrayList<Transaction>();
-        Card card = new Card(cardId, "", expirationDate, 0,false, transactions);
-        cardRepository.save(card);
+        Card card = new Card(cardNumber, "", expirationDate, 0,false, transactions);
+        cardRepository.saveAndFlush(card);
         return card;
     }
 
     @Override
-    public Card activateCard(String id) {
-        if(cardRepository.existsById(id)) {
+    public Card activateCard(Integer id) {
+        if(cardRepository.findById(id).isPresent()) {
             Card card = cardRepository.findById(id).get();
             card.setIsActive(true);
             cardRepository.save(card);
@@ -43,7 +44,7 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public String blockCard(String id) {
+    public String blockCard(Integer id) {
         if(cardRepository.existsById(id)) {
             Card card = cardRepository.findById(id).get();
             card.setIsActive(false);
@@ -55,7 +56,7 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public Card refillCard(String id, Integer balance) {
+    public Card refillCard(Integer id, Integer balance) {
         if(cardRepository.existsById(id)) {
             Card card = cardRepository.findById(id).get();
             card.setBalance(card.getBalance() + balance);
@@ -67,7 +68,7 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public Integer getBalance(String id) {
+    public Integer getBalance(Integer id) {
         if(cardRepository.existsById(id)) {
             Card card = cardRepository.findById(id).get();
             return card.getBalance();
@@ -77,7 +78,7 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public Card getCard(String id) {
+    public Card getCard(Integer id) {
         if(cardRepository.existsById(id)) {
             return cardRepository.findById(id).get();
         } else {
@@ -86,7 +87,7 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public Integer updateBalance(String id, Integer balance) {
+    public Integer updateBalance(Integer id, Integer balance) {
         if(cardRepository.existsById(id)) {
             Card card = cardRepository.findById(id).get();
             if(card.getBalance() > balance) {
